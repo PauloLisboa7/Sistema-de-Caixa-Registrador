@@ -29,10 +29,15 @@ export default function Checkout() {
 
   async function finalizar() {
     const payload = { produtos: cart.map(i => ({ id: i.id, quantidade: i.quantidade })), descontoPercentual: Number(desconto) }
-    const res = await axios.post(`${api}/sales`, payload)
-    alert('Venda registrada. Total: R$ ' + res.data.total)
-    setCart([])
-    fetchProducts()
+    try {
+      const res = await axios.post(`${api}/sales`, payload)
+      setMessage({ type: 'success', text: 'Venda registrada. Total: R$ ' + Number(res.data.total).toFixed(2) })
+      setCart([])
+      fetchProducts()
+    } catch (err) {
+      const text = err?.response?.data?.error || err.message || 'Erro ao registrar venda'
+      setMessage({ type: 'error', text })
+    }
   }
 
   const subtotal = cart.reduce((s, i) => s + i.preco * i.quantidade, 0)
@@ -41,6 +46,7 @@ export default function Checkout() {
   return (
     <div>
       <h2>Caixa</h2>
+      {message && <div style={{ padding: 8, marginBottom: 8, color: message.type === 'error' ? 'crimson' : 'green' }}>{message.text}</div>}
       <div style={{ display: 'flex', gap: 20 }}>
         <div>
           <h3>Produtos</h3>

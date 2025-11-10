@@ -87,4 +87,19 @@ async function listSales(req, res) {
   res.json(data)
 }
 
+async function totalSalesToday(req, res) {
+  // calcula o total de vendas do dia atual (timezone do banco)
+  try {
+    const startOfDay = new Date()
+    startOfDay.setHours(0,0,0,0)
+    const iso = startOfDay.toISOString()
+    const { data, error } = await supabase.from('vendas').select('total').gte('data', iso)
+    if (error) return res.status(500).json({ error: error.message })
+    const total = data.reduce((s, v) => s + Number(v.total || 0), 0)
+    res.json({ total })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
 module.exports = { createSale, listSales }

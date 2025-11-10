@@ -13,5 +13,6 @@ router.delete('/products/:id', products.deleteProduct)
 // Vendas
 router.post('/sales', sales.createSale)
 router.get('/sales', sales.listSales)
+router.get('/sales/total-day', sales.totalSalesToday)
 
 module.exports = router
