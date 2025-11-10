@@ -1,13 +1,39 @@
+
 const supabase = require('../services/supabaseClient')
 
 // Estrutura esperada de venda: { produtos: [{ id, quantidade }], descontoPercentual }
+// Implementação preferencial: chamar função SQL transacional 'create_sale' no banco (RPC).
+// Fallback: implementar lógica sequencial (menos segura) caso a função não exista.
 async function createSale(req, res) {
   const { produtos, descontoPercentual = 0 } = req.body
   if (!produtos || !Array.isArray(produtos) || produtos.length === 0) {
     return res.status(400).json({ error: 'Lista de produtos é obrigatória' })
   }
 
-  // Validar estoque e calcular total
+  // Preparar payload básico (a função SQL espera um JSON com produtos e desconto)
+  const vendaPayload = { produtos, descontoPercentual }
+
+  try {
+    // Tenta usar a função SQL transacional (criada em backend/scripts/create_function.sql)
+    const { data, error } = await supabase.rpc('create_sale', { sale: JSON.stringify(vendaPayload) })
+    if (error) {
+      // Se função não existir ou erro no RPC, cair para o fallback
+      console.warn('RPC create_sale falhou, fallback para lógica em JS:', error.message || error)
+      return await createSaleFallback(req, res)
+    }
+
+    // Supabase RPC pode retornar o registro inserido
+    return res.status(201).json(data)
+  } catch (err) {
+    console.warn('Erro ao chamar RPC create_sale, executando fallback:', err.message || err)
+    return await createSaleFallback(req, res)
+  }
+}
+
+async function createSaleFallback(req, res) {
+  // Lógica existente (menos segura): validar, calcular, atualizar e inserir
+  const { produtos, descontoPercentual = 0 } = req.body
+
   let total = 0
   const produtosDetalhados = []
 
@@ -21,14 +47,11 @@ async function createSale(req, res) {
     produtosDetalhados.push({ id: produto.id, nome: produto.nome, preco: produto.preco, quantidade: item.quantidade, subtotal })
   }
 
-  // Aplicar desconto
   if (descontoPercentual > 0) {
     total = total * (1 - descontoPercentual / 100)
   }
 
-  // Atualizar estoque (sequencial) e registrar venda
   for (const item of produtos) {
-    // obter estoque atual (novamente por segurança)
     const { data: p } = await supabase.from('produtos').select('estoque').eq('id', item.id).limit(1).single()
     const novoEstoque = Number(p.estoque) - Number(item.quantidade)
     await supabase.from('produtos').update({ estoque: novoEstoque }).eq('id', item.id)
