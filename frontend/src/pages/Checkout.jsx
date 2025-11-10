@@ -5,7 +5,7 @@ export default function Checkout() {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
   const [desconto, setDesconto] = useState(0)
-  const api = process.env.VITE_API_URL || 'http://localhost:4000/api'
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:4001/api'
 
   useEffect(() => { fetchProducts() }, [])
 

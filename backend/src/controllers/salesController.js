@@ -102,4 +102,4 @@ async function totalSalesToday(req, res) {
   }
 }
 
-module.exports = { createSale, listSales }
+module.exports = { createSale, listSales, totalSalesToday }
