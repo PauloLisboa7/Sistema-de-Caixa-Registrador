@@ -23,7 +23,21 @@ export default function History() {
   return (
     <div>
       <h2>Histórico de Vendas</h2>
-      <div style={{ marginBottom: 12 }}>Total do dia: R$ {Number(totalDay).toFixed(2)}</div>
+      <div className="card" style={{ 
+        marginBottom: '1.5rem',
+        backgroundColor: 'var(--primary-color)',
+        color: 'white',
+        padding: '1.5rem',
+        textAlign: 'center'
+      }}>
+        <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>💰 Total de Vendas Hoje</h3>
+        <div style={{ 
+          fontSize: '2rem',
+          fontWeight: 'bold'
+        }}>
+          R$ {Number(totalDay).toFixed(2)}
+        </div>
+      </div>
       <ul>
         {sales.map(s => (
           <li key={s.id}>{new Date(s.data).toLocaleString()} — R$ {s.total} — produtos: {s.produtos ? s.produtos.length : 0}</li>

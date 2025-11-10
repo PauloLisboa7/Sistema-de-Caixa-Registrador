@@ -63,8 +63,28 @@ export default function Checkout() {
               <li key={i.id}>{i.nome} x{i.quantidade} — R$ {i.preco * i.quantidade} <button onClick={() => removeFromCart(i.id)}>remover</button></li>
             ))}
           </ul>
-          <div>
-            <label>Desconto %: <input type="number" value={desconto} onChange={e => setDesconto(e.target.value)} /></label>
+          <div className="card" style={{ marginBottom: '1rem', backgroundColor: '#f8f9fa' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>💯 Desconto (%):</span>
+              <input 
+                type="number" 
+                value={desconto} 
+                onChange={e => setDesconto(Math.min(100, Math.max(0, e.target.value)))}
+                style={{
+                  width: '80px',
+                  padding: '0.5rem',
+                  border: '1px solid var(--accent-color)',
+                  borderRadius: 'var(--border-radius)'
+                }}
+                min="0"
+                max="100"
+              />
+            </label>
+            {desconto > 0 && (
+              <div style={{ marginTop: '0.5rem', color: 'var(--success-color)' }}>
+                Economia: R$ {(subtotal - total).toFixed(2)}
+              </div>
+            )}
           </div>
           <div>Subtotal: R$ {subtotal.toFixed(2)}</div>
           <div>Total: R$ {total.toFixed(2)}</div>
