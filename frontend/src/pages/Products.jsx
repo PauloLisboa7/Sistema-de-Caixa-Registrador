@@ -51,14 +51,39 @@ function Products() {
         marginBottom: '2rem'
       }}>
         <h2 style={{ margin: 0 }}>📦 Produtos disponíveis</h2>
-        <span className="card" style={{ 
-          padding: '0.5rem 1rem',
-          backgroundColor: 'var(--accent-color)',
-          color: 'white',
-          borderRadius: 'var(--border-radius)'
-        }}>
-          {products.length} itens
-        </span>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button
+            className="btn-secondary"
+            onClick={async () => {
+              try {
+                setLoading(true)
+                await axios.post(`${api}/products/sync`)
+                const res = await axios.get(`${api}/products`)
+                setProducts(res.data || [])
+                setError(null)
+              } catch (err) {
+                console.error('Erro ao sincronizar produtos:', err)
+                setError('Erro ao sincronizar produtos. Por favor, tente novamente.')
+              } finally {
+                setLoading(false)
+              }
+            }}
+            style={{
+              padding: '0.5rem 1rem',
+              fontSize: '0.875rem'
+            }}
+          >
+            🔄 Sincronizar
+          </button>
+          <span className="card" style={{ 
+            padding: '0.5rem 1rem',
+            backgroundColor: 'var(--accent-color)',
+            color: 'white',
+            borderRadius: 'var(--border-radius)'
+          }}>
+            {products.length} itens
+          </span>
+        </div>
       </div>
 
       {loading ? (
@@ -98,13 +123,6 @@ function Products() {
               }}>
                 R$ {Number(p.preco).toFixed(2)}
               </div>
-              <button 
-                className="btn-secondary" 
-                style={{ width: '100%' }}
-                onClick={() => window.location.href = '/checkout'}
-              >
-                🛒 Adicionar ao carrinho
-              </button>
             </div>
           ))}
         </div>
