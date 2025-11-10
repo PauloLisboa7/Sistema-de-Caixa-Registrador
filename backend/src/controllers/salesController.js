@@ -65,7 +65,18 @@ async function createSaleFallback(req, res) {
   }
 
   const { data: vendaInserida, error: err2 } = await supabase.from('vendas').insert([venda]).select()
-  if (err2) return res.status(500).json({ error: err2.message })
+  if (err2) {
+    // fallback: se coluna descontoPercentual não existir no banco, tentar inserir sem ela
+    const msg = (err2.message || '').toString().toLowerCase()
+    if (msg.includes('descontopercentual') || msg.includes('descontoPercentual'.toLowerCase())) {
+      const venda2 = { ...venda }
+      delete venda2.descontoPercentual
+      const { data: vendaInserida2, error: err3 } = await supabase.from('vendas').insert([venda2]).select()
+      if (err3) return res.status(500).json({ error: err3.message })
+      return res.status(201).json(vendaInserida2[0])
+    }
+    return res.status(500).json({ error: err2.message })
+  }
 
   res.status(201).json(vendaInserida[0])
 }

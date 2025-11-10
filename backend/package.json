@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "clean": "node src/scripts/clean_duplicates.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.0.0",
