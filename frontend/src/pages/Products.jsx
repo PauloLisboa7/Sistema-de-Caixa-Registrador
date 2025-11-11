@@ -28,13 +28,17 @@ function Products() {
 
   if (error) {
     return (
-      <div className="card alert alert-error">
-        <h2>😕 Ops! Algo deu errado</h2>
-        <p>{error}</p>
+      <div className="card-premium border-red-500">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-4xl">😕</span>
+          <div>
+            <h2 className="text-2xl font-bold text-red-700">Oops! Algo deu errado</h2>
+            <p className="text-red-600">{error}</p>
+          </div>
+        </div>
         <button 
-          className="btn-primary" 
+          className="btn-primary mt-4"
           onClick={() => window.location.reload()}
-          style={{ marginTop: '1rem' }}
         >
           🔄 Tentar novamente
         </button>
@@ -43,85 +47,80 @@ function Products() {
   }
 
   return (
-    <div className="card fade-in">
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '2rem'
-      }}>
-        <h2 style={{ margin: 0 }}>📦 Produtos disponíveis</h2>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <button
-            className="btn-secondary"
-            onClick={async () => {
-              try {
-                setLoading(true)
-                await axios.post(`${api}/products/sync`)
-                const res = await axios.get(`${api}/products`)
-                setProducts(res.data || [])
-                setError(null)
-              } catch (err) {
-                console.error('Erro ao sincronizar produtos:', err)
-                setError('Erro ao sincronizar produtos. Por favor, tente novamente.')
-              } finally {
-                setLoading(false)
-              }
-            }}
-            style={{
-              padding: '0.5rem 1rem',
-              fontSize: '0.875rem'
-            }}
-          >
-            🔄 Sincronizar
-          </button>
-          <span className="card" style={{ 
-            padding: '0.5rem 1rem',
-            backgroundColor: 'var(--accent-color)',
-            color: 'white',
-            borderRadius: 'var(--border-radius)'
-          }}>
-            {products.length} itens
-          </span>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header Section */}
+      <div className="card-premium">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-meat-700 mb-2">📦 Produtos Disponíveis</h2>
+            <p className="text-meat-600">Confira nossa seleção premium de açougaria</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              className="btn-secondary px-4 py-2"
+              onClick={async () => {
+                try {
+                  setLoading(true)
+                  await axios.post(`${api}/products/sync`)
+                  const res = await axios.get(`${api}/products`)
+                  setProducts(res.data || [])
+                  setError(null)
+                } catch (err) {
+                  console.error('Erro ao sincronizar produtos:', err)
+                  setError('Erro ao sincronizar produtos.')
+                } finally {
+                  setLoading(false)
+                }
+              }}
+            >
+              🔄 Sincronizar
+            </button>
+            <div className="bg-meat-600 text-white px-4 py-2 rounded-meat font-bold shadow-meat">
+              {products.length} itens
+            </div>
+          </div>
         </div>
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <div className="loading">Carregando produtos...</div>
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-16">
+          <div className="text-center">
+            <div className="loader mx-auto mb-4"></div>
+            <p className="text-meat-600 font-semibold">Carregando produtos...</p>
+          </div>
         </div>
-      ) : products.length === 0 ? (
-        <div className="alert" style={{ textAlign: 'center' }}>
-          <h3>Nenhum produto encontrado</h3>
-          <p>Adicione produtos para começar as vendas.</p>
+      )}
+
+      {/* Empty State */}
+      {!loading && products.length === 0 && (
+        <div className="card text-center py-16">
+          <h3 className="text-2xl font-bold text-meat-700 mb-2">📭 Nenhum produto encontrado</h3>
+          <p className="text-meat-600">Adicione produtos no painel administrativo para começar.</p>
         </div>
-      ) : (
-        <div className="product-list">
+      )}
+
+      {/* Products Grid */}
+      {!loading && products.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map(p => (
-            <div key={p.id} className="product-card">
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'flex-start'
-              }}>
-                <h3 style={{ margin: 0 }}>{p.nome}</h3>
-                <span style={{ 
-                  backgroundColor: p.estoque > 10 ? 'var(--success-color)' : 'var(--warning-color)',
-                  color: 'white',
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  fontSize: '0.875rem'
-                }}>
+            <div key={p.id} className="card hover:shadow-meat-lg transition-all duration-300 transform hover:-translate-y-1">
+              <div className="flex items-start justify-between mb-3">
+                <h3 className="text-xl font-bold text-meat-700 flex-1">{p.nome}</h3>
+                <span className={`badge ml-2 whitespace-nowrap ${
+                  p.estoque > 10 ? 'badge-success' : p.estoque > 0 ? 'badge-warning' : 'badge-danger'
+                }`}>
                   {p.estoque} un
                 </span>
               </div>
-              <div style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold',
-                color: 'var(--primary-color)',
-                margin: '1rem 0'
-              }}>
-                R$ {Number(p.preco).toFixed(2)}
+              
+              <div className="border-t border-meat-100 pt-3">
+                <div className="text-3xl font-bold gradient-text mb-2">
+                  R$ {Number(p.preco).toFixed(2)}
+                </div>
+                <p className="text-sm text-meat-600 font-medium">
+                  {p.estoque > 0 ? '✓ Em estoque' : '✗ Indisponível'}
+                </p>
               </div>
             </div>
           ))}

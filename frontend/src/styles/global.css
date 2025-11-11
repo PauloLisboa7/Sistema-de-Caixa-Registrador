@@ -10,6 +10,13 @@
   --card-background: #ffffff;
   --border-radius: 8px;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  /* Novas cores para admin */
+  --surface-color: #ffffff;
+  --border-color: #e1e4e8;
+  --success-bg-color: #dcfce7;
+  --error-bg-color: #fee2e2;
+  --error-dark-color: #dc2626;
 }
 
 * {
