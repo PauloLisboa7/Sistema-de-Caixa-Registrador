@@ -21,86 +21,65 @@ export default function History() {
   }
 
   return (
-    <div className="fade-in">
-      <div className="card" style={{ 
-        marginBottom: '1.5rem',
-        backgroundColor: 'var(--primary-color)',
-        color: 'white',
-        padding: '1.5rem',
-        textAlign: 'center'
-      }}>
-        <h3 style={{ margin: 0, marginBottom: '0.5rem' }}>💰 Total de Vendas Hoje</h3>
-        <div style={{ 
-          fontSize: '2rem',
-          fontWeight: 'bold'
-        }}>
+    <div className="animate-fade-in space-y-6">
+      {/* Card Total do Dia */}
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 rounded-xl shadow-lg p-8 text-center text-white border-b-4 border-amber-900">
+        <h3 className="text-lg font-bold mb-2">💰 Total de Vendas Hoje</h3>
+        <div className="text-5xl font-black">
           R$ {Number(totalDay).toFixed(2)}
         </div>
       </div>
 
-      <div className="card">
-        <h2 style={{ marginBottom: '1.5rem' }}>📋 Histórico de Vendas</h2>
+      {/* Card Histórico */}
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-amber-100">
+        <h2 className="text-3xl font-black text-amber-900 mb-6">📋 Histórico de Vendas</h2>
+        
         {sales.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-color)' }}>
-            Nenhuma venda registrada.
+          <div className="text-center py-12 text-gray-500">
+            <p className="text-xl font-semibold">Nenhuma venda registrada</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
             {sales.map(sale => (
-              <div key={sale.id} className="card" style={{ 
-                border: '1px solid var(--accent-color)',
-                backgroundColor: '#fff'
-              }}>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '1rem',
-                  padding: '0.5rem',
-                  backgroundColor: 'var(--accent-color)',
-                  color: 'white',
-                  borderRadius: 'var(--border-radius)'
-                }}>
-                  <span>{new Date(sale.data).toLocaleString()}</span>
-                  <span style={{ fontWeight: 'bold' }}>
+              <div key={sale.id} className="bg-white border-l-4 border-amber-700 rounded-lg overflow-hidden shadow hover:shadow-md transition-shadow">
+                {/* Header com Data e Total */}
+                <div className="bg-gradient-to-r from-amber-100 to-orange-100 px-6 py-4 flex justify-between items-center border-b-2 border-amber-200">
+                  <span className="font-bold text-amber-900">
+                    {new Date(sale.data).toLocaleString()}
+                  </span>
+                  <span className="text-2xl font-black text-amber-700">
                     R$ {Number(sale.total).toFixed(2)}
                   </span>
                 </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <h4 style={{ marginBottom: '0.5rem' }}>🛍️ Itens da Venda</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {/* Itens da Venda */}
+                <div className="p-6">
+                  <h4 className="text-lg font-bold text-amber-900 mb-4">🛍️ Itens da Venda</h4>
+                  <div className="space-y-2">
                     {sale.produtos && sale.produtos.map((produto, idx) => (
-                      <div key={idx} style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between',
-                        padding: '0.5rem',
-                        backgroundColor: '#f8f9fa',
-                        borderRadius: 'var(--border-radius)'
-                      }}>
+                      <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors">
                         <div>
-                          <strong>{produto.nome}</strong>
-                          <div style={{ fontSize: '0.9rem', color: 'var(--text-color)' }}>
+                          <p className="font-bold text-gray-800">{produto.nome}</p>
+                          <p className="text-sm text-gray-600">
                             {produto.quantidade}x R$ {Number(produto.preco).toFixed(2)}
-                          </div>
+                          </p>
                         </div>
-                        <div style={{ fontWeight: 'bold' }}>
+                        <p className="font-black text-amber-700">
                           R$ {Number(produto.subtotal).toFixed(2)}
-                        </div>
+                        </p>
                       </div>
                     ))}
                   </div>
-                </div>
 
-                {sale.descontoPercentual > 0 && (
-                  <div style={{ 
-                    color: 'var(--success-color)', 
-                    marginTop: '0.5rem',
-                    fontSize: '0.9rem'
-                  }}>
-                    Desconto aplicado: {sale.descontoPercentual}%
-                  </div>
-                )}
+                  {/* Desconto */}
+                  {sale.descontoPercentual > 0 && (
+                    <div className="mt-4 p-3 bg-green-50 border-l-4 border-green-600 rounded">
+                      <p className="text-sm font-bold text-green-700">
+                        ✅ Desconto aplicado: {sale.descontoPercentual}%
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
