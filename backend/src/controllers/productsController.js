@@ -35,10 +35,21 @@ async function deleteProduct(req, res) {
   res.json({ deleted: true })
 }
 
+async function syncProducts(req, res) {
+  try {
+    const { data, error } = await supabase.from('produtos').select('*')
+    if (error) return res.status(500).json({ error: error.message })
+    res.json({ success: true, count: data.length, data })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
 module.exports = {
   listProducts,
   getProduct,
   createProduct,
   updateProduct,
   deleteProduct,
+  syncProducts,
 }
