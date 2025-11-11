@@ -69,134 +69,56 @@ export default function Admin() {
   }
 
   return (
-    <div className="grid grid-2">
-      <div className="card">
-        <h2 style={{ marginBottom: '1.5rem' }}>📝 Cadastrar Novo Produto</h2>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
+      {/* Adicionar Produto */}
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-amber-100">
+        <h2 className="text-3xl font-black text-amber-900 mb-6">📝 Novo Produto</h2>
         {message && (
-          <div className={`alert alert-${message.type}`} style={{ marginBottom: '1rem' }}>
+          <div className={`p-4 rounded-lg mb-4 font-bold animate-slide-in-up ${message.type === 'success' ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300'}`}>
             {message.text}
           </div>
         )}
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Nome do Produto</label>
-            <input
-              type="text"
-              value={newProduct.nome}
-              onChange={e => setNewProduct({ ...newProduct, nome: e.target.value })}
-              required
-              placeholder="Ex: Picanha"
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-amber-900 mb-2">Nome</label>
+            <input type="text" value={newProduct.nome} onChange={e => setNewProduct({ ...newProduct, nome: e.target.value })} required placeholder="Ex: Picanha" className="w-full px-4 py-2 rounded-lg border-2 border-amber-200 focus:border-amber-700 focus:outline-none"/>
           </div>
-          <div className="input-group">
-            <label>Preço (R$)</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              value={newProduct.preco}
-              onChange={e => setNewProduct({ ...newProduct, preco: e.target.value })}
-              required
-              placeholder="Ex: 89.90"
-            />
+          <div>
+            <label className="block text-sm font-bold text-amber-900 mb-2">Preço (R$)</label>
+            <input type="number" step="0.01" min="0" value={newProduct.preco} onChange={e => setNewProduct({ ...newProduct, preco: e.target.value })} required placeholder="Ex: 89.90" className="w-full px-4 py-2 rounded-lg border-2 border-amber-200 focus:border-amber-700 focus:outline-none"/>
           </div>
-          <div className="input-group">
-            <label>Estoque (unidades)</label>
-            <input
-              type="number"
-              min="0"
-              value={newProduct.estoque}
-              onChange={e => setNewProduct({ ...newProduct, estoque: e.target.value })}
-              required
-              placeholder="Ex: 50"
-            />
+          <div>
+            <label className="block text-sm font-bold text-amber-900 mb-2">Estoque</label>
+            <input type="number" min="0" value={newProduct.estoque} onChange={e => setNewProduct({ ...newProduct, estoque: e.target.value })} required placeholder="Ex: 50" className="w-full px-4 py-2 rounded-lg border-2 border-amber-200 focus:border-amber-700 focus:outline-none"/>
           </div>
-          <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-            ✨ Adicionar Produto
-          </button>
+          <button type="submit" className="w-full py-3 bg-amber-700 text-white font-black rounded-lg hover:bg-amber-800 transition-all shadow-lg">✨ Adicionar</button>
         </form>
       </div>
 
-      <div className="card">
-        <h2 style={{ marginBottom: '1.5rem' }}>📋 Gerenciar Produtos</h2>
-        <div className="product-grid">
+      {/* Gerenciar Produtos */}
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-amber-100">
+        <h2 className="text-3xl font-black text-amber-900 mb-6">📋 Gerenciar ({products.length})</h2>
+        <div className="space-y-4 max-h-96 overflow-y-auto">
           {products.map(product => (
-            <div key={product.id} className="product-card">
+            <div key={product.id} className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border-l-4 border-amber-700">
               {editingProduct?.id === product.id ? (
-                <form onSubmit={handleUpdate} className="edit-form">
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      value={editingProduct.nome}
-                      onChange={e => setEditingProduct({ ...editingProduct, nome: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={editingProduct.preco}
-                      onChange={e => setEditingProduct({ ...editingProduct, preco: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="input-group">
-                    <input
-                      type="number"
-                      min="0"
-                      value={editingProduct.estoque}
-                      onChange={e => setEditingProduct({ ...editingProduct, estoque: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                      💾 Salvar
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn-secondary"
-                      onClick={() => setEditingProduct(null)}
-                      style={{ flex: 1 }}
-                    >
-                      ❌ Cancelar
-                    </button>
+                <form onSubmit={handleUpdate} className="space-y-2">
+                  <input type="text" value={editingProduct.nome} onChange={e => setEditingProduct({ ...editingProduct, nome: e.target.value })} required className="w-full px-3 py-2 rounded border-2 border-amber-200 focus:border-amber-700 focus:outline-none text-sm"/>
+                  <input type="number" step="0.01" min="0" value={editingProduct.preco} onChange={e => setEditingProduct({ ...editingProduct, preco: e.target.value })} required className="w-full px-3 py-2 rounded border-2 border-amber-200 focus:border-amber-700 focus:outline-none text-sm"/>
+                  <input type="number" min="0" value={editingProduct.estoque} onChange={e => setEditingProduct({ ...editingProduct, estoque: e.target.value })} required className="w-full px-3 py-2 rounded border-2 border-amber-200 focus:border-amber-700 focus:outline-none text-sm"/>
+                  <div className="flex gap-2">
+                    <button type="submit" className="flex-1 py-2 bg-green-600 text-white font-bold rounded text-sm hover:bg-green-700">💾 Salvar</button>
+                    <button type="button" className="flex-1 py-2 bg-gray-400 text-white font-bold rounded text-sm hover:bg-gray-500" onClick={() => setEditingProduct(null)}>❌ Cancelar</button>
                   </div>
                 </form>
               ) : (
                 <>
-                  <h3>{product.nome}</h3>
-                  <div style={{ 
-                    fontSize: '1.5rem',
-                    fontWeight: 'bold',
-                    color: 'var(--primary-color)',
-                    margin: '1rem 0'
-                  }}>
-                    R$ {Number(product.preco).toFixed(2)}
-                  </div>
-                  <div style={{ 
-                    color: product.estoque > 10 ? 'var(--success-color)' : 'var(--warning-color)',
-                    marginBottom: '1rem'
-                  }}>
-                    Estoque: {product.estoque} unidades
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button 
-                      className="btn-secondary"
-                      onClick={() => setEditingProduct(product)}
-                      style={{ flex: 1 }}
-                    >
-                      ✏️ Editar
-                    </button>
-                    <button 
-                      className="btn-danger"
-                      onClick={() => handleDelete(product.id)}
-                      style={{ flex: 1 }}
-                    >
-                      🗑️ Excluir
-                    </button>
+                  <h3 className="text-lg font-bold text-amber-900 mb-2">{product.nome}</h3>
+                  <div className="text-2xl font-black text-amber-700 mb-2">R$ {Number(product.preco).toFixed(2)}</div>
+                  <div className={`mb-3 font-bold ${product.estoque > 10 ? 'text-green-700' : 'text-orange-700'}`}>📦 Estoque: {product.estoque} un</div>
+                  <div className="flex gap-2">
+                    <button className="flex-1 py-2 bg-yellow-500 text-amber-950 font-bold rounded text-sm hover:bg-yellow-600" onClick={() => setEditingProduct(product)}>✏️ Editar</button>
+                    <button className="flex-1 py-2 bg-red-600 text-white font-bold rounded text-sm hover:bg-red-700" onClick={() => handleDelete(product.id)}>🗑️ Excluir</button>
                   </div>
                 </>
               )}
